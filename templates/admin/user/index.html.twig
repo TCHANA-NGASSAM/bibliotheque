@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Utilisateurs{% endblock %}
+
+{% block body %}
+    <h1>Utilisateurs et rôles</h1>
+    <p><a href="{{ path('admin_dashboard') }}" class="btn btn-ghost">← Admin</a></p>
+    <table class="data-table">
+        <thead>
+            <tr><th>E-mail</th><th>Rôles (hors ROLE_USER)</th><th></th></tr>
+        </thead>
+        <tbody>
+            {% for u in users %}
+                <tr>
+                    <td>{{ u.email }}</td>
+                    <td>{{ u.storedRoles|join(', ') ?: '—' }}</td>
+                    <td><a href="{{ path('admin_user_edit', { id: u.id }) }}">Modifier les rôles</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

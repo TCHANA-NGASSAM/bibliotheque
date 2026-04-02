@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Langues{% endblock %}
+
+{% block body %}
+    <h1>Langues</h1>
+    <p><a href="{{ path('librarian_language_new') }}" class="btn btn-primary">Nouvelle langue</a>
+       <a href="{{ path('librarian_dashboard') }}" class="btn btn-ghost">Tableau de bord</a></p>
+    <ul class="simple-list">
+        {% for lang in languages %}
+            <li>
+                {{ lang.name }}
+                <a href="{{ path('librarian_language_edit', { id: lang.id }) }}">Modifier</a>
+                <form method="post" action="{{ path('librarian_language_delete', { id: lang.id }) }}" class="inline-form" onsubmit="return confirm('Supprimer ?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete_language' ~ lang.id) }}">
+                    <button type="submit" class="link-button danger">Supprimer</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

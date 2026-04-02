@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Catégories{% endblock %}
+
+{% block body %}
+    <h1>Catégories</h1>
+    <p><a href="{{ path('librarian_category_new') }}" class="btn btn-primary">Nouvelle catégorie</a>
+       <a href="{{ path('librarian_dashboard') }}" class="btn btn-ghost">Tableau de bord</a></p>
+    <ul class="simple-list">
+        {% for c in categories %}
+            <li>
+                {{ c.name }}
+                <a href="{{ path('librarian_category_edit', { id: c.id }) }}">Modifier</a>
+                <form method="post" action="{{ path('librarian_category_delete', { id: c.id }) }}" class="inline-form" onsubmit="return confirm('Supprimer ?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete_category' ~ c.id) }}">
+                    <button type="submit" class="link-button danger">Supprimer</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

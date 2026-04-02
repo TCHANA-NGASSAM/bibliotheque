@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réservations{% endblock %}
+
+{% block body %}
+    <h1>Historique des réservations</h1>
+    <p><a href="{{ path('librarian_dashboard') }}" class="btn btn-ghost">Tableau de bord</a></p>
+    {% if reservations is empty %}
+        <p class="muted">Aucune réservation.</p>
+    {% else %}
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Utilisateur</th>
+                    <th>Livre</th>
+                    <th>Début</th>
+                    <th>Fin</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in reservations %}
+                    <tr>
+                        <td>{{ r.user.email }}</td>
+                        <td><a href="{{ path('app_book_show', { id: r.book.id }) }}">{{ r.book.title }}</a></td>
+                        <td>{{ r.startAt|date('d/m/Y H:i') }}</td>
+                        <td>{{ r.endAt|date('d/m/Y H:i') }}</td>
+                        <td>
+                            {% set s = r.status.value %}
+                            {% if s == 'pending' %}En attente
+                            {% elseif s == 'confirmed' %}Confirmée
+                            {% elseif s == 'cancelled' %}Annulée
+                            {% elseif s == 'completed' %}Terminée
+                            {% else %}{{ s }}{% endif %}
+                        </td>
+                        <td class="nowrap">
+                            {% if s == 'pending' %}
+                                <form method="post" action="{{ path('librarian_reservation_confirm', { id: r.id }) }}" class="inline-form">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('reservation_action' ~ r.id) }}">
+                                    <button type="submit" class="link-button">Confirmer</button>
+                                </form>
+                                <form method="post" action="{{ path('librarian_reservation_reject', { id: r.id }) }}" class="inline-form">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('reservation_action' ~ r.id) }}">
+                                    <button type="submit" class="link-button danger">Refuser</button>
+                                </form>
+                            {% elseif s == 'confirmed' %}
+                                <form method="post" action="{{ path('librarian_reservation_complete', { id: r.id }) }}" class="inline-form">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('reservation_action' ~ r.id) }}">
+                                    <button type="submit" class="link-button">Retour (stock +1)</button>
+                                </form>
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ book.title }} — BiblioConnect{% endblock %}
+
+{% block body %}
+    <article class="book-detail">
+        <nav class="breadcrumb">
+            <a href="{{ path('app_home') }}">Accueil</a>
+            <span aria-hidden="true"> / </span>
+            <a href="{{ path('app_books') }}">Catalogue</a>
+        </nav>
+
+        <div class="book-detail-layout">
+            <div class="book-detail-cover">
+                {% if book.image %}
+                    <img src="{{ book.image starts with 'http' ? book.image : asset(book.image) }}" alt="Couverture : {{ book.title }}">
+                {% else %}
+                    <div class="book-detail-placeholder">Pas d’image</div>
+                {% endif %}
+            </div>
+            <div class="book-detail-body">
+                <h1>{{ book.title }}</h1>
+                <p class="book-detail-author">Par {{ book.author }}</p>
+                <ul class="book-detail-tags">
+                    <li>{{ book.category.name }}</li>
+                    <li>{{ book.language.name }}</li>
+                    <li>Stock : {{ book.stock }}</li>
+                </ul>
+                <div class="book-detail-description">
+                    {{ book.description|nl2br }}
+                </div>
+
+                {% if app.user %}
+                    <div class="book-actions">
+                        <form method="post" action="{{ path('app_book_favorite_toggle', { id: book.id }) }}" class="inline-form">
+                            <input type="hidden" name="_token" value="{{ csrf_token('favorite' ~ book.id) }}">
+                            <button type="submit" class="btn btn-ghost">
+                                {% if isFavorite %}Retirer des favoris{% else %}Mettre en favori{% endif %}
+                            </button>
+                        </form>
+                    </div>
+
+                    <section class="panel">
+                        <h2>Réserver (planning)</h2>
+                        <p class="muted small">Choisissez le créneau souhaité. La demande sera traitée par un bibliothécaire.</p>
+                        {{ form_start(reservationForm, { action: path('app_book_reserve', { id: book.id }), attr: { class: 'stack-form' } }) }}
+                            {{ form_row(reservationForm.startAt) }}
+                            {{ form_row(reservationForm.endAt) }}
+                            <button type="submit" class="btn btn-primary">Envoyer la demande</button>
+                        {{ form_end(reservationForm) }}
+                    </section>
+
+                    <section class="panel">
+                        <h2>Avis et note</h2>
+                        {% if existingReview %}
+                            <p>Votre avis : <strong>{{ existingReview.rating }}/5</strong> — {{ existingReview.content }}</p>
+                            {% if not existingReview.visible %}
+                                <p class="muted small">En cours de modération par l’administrateur.</p>
+                            {% endif %}
+                        {% elseif reviewForm %}
+                            {{ form_start(reviewForm, { action: path('app_book_review', { id: book.id }), attr: { class: 'stack-form' } }) }}
+                                {{ form_row(reviewForm.rating) }}
+                                {{ form_row(reviewForm.content) }}
+                                <button type="submit" class="btn btn-primary">Publier mon avis</button>
+                            {{ form_end(reviewForm) }}
+                        {% endif %}
+                    </section>
+                {% else %}
+                    <p class="muted"><a href="{{ path('app_login') }}">Connectez-vous</a> pour réserver, ajouter aux favoris ou laisser un avis.</p>
+                {% endif %}
+
+                <section class="panel">
+                    <h2>Avis des lecteurs</h2>
+                    {% if reviews is empty %}
+                        <p class="muted">Pas encore d’avis.</p>
+                    {% else %}
+                        <ul class="review-list">
+                            {% for r in reviews %}
+                                <li class="review-item">
+                                    <div class="review-stars" aria-label="Note {{ r.rating }} sur 5">{% for _ in 1..r.rating %}★{% endfor %}{% if r.rating < 5 %}{% for _ in 1..(5 - r.rating) %}☆{% endfor %}{% endif %}</div>
+                                    <p class="review-meta">{{ r.user.email }} — {{ r.createdAt|date('d/m/Y H:i') }}</p>
+                                    <p>{{ r.content|nl2br }}</p>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </section>
+            </div>
+        </div>
+    </article>
+{% endblock %}

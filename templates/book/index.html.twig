@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Catalogue — BiblioConnect{% endblock %}
+
+{% block body %}
+    <h1>Catalogue</h1>
+
+    <form method="get" action="{{ path('app_books') }}" class="search-form">
+        <div class="search-row">
+            <label>
+                <span class="label-text">Titre</span>
+                <input type="search" name="title" value="{{ search_title }}" placeholder="Ex. Les Misérables" autocomplete="off">
+            </label>
+            <label>
+                <span class="label-text">Auteur</span>
+                <input type="search" name="author" value="{{ search_author }}" placeholder="Ex. Hugo" autocomplete="off">
+            </label>
+            <label>
+                <span class="label-text">Catégorie</span>
+                <select name="category">
+                    <option value="">Toutes</option>
+                    {% for cat in categories %}
+                        <option value="{{ cat.id }}"{% if search_category == cat.id %} selected{% endif %}>{{ cat.name }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+        </div>
+        <div class="search-actions">
+            <button type="submit" class="btn btn-primary">Rechercher</button>
+            <a href="{{ path('app_books') }}" class="btn btn-ghost">Réinitialiser</a>
+        </div>
+    </form>
+
+    {% if books is empty %}
+        <p class="muted">Aucun ouvrage ne correspond à ces critères.</p>
+    {% else %}
+        <p class="result-count">{{ books|length }} résultat(s)</p>
+        <ul class="book-list">
+            {% for book in books %}
+                <li class="book-list-item">
+                    <a href="{{ path('app_book_show', { id: book.id }) }}" class="book-list-link">
+                        <span class="book-list-title">{{ book.title }}</span>
+                        <span class="book-list-meta">{{ book.author }} — {{ book.category.name }} · {{ book.language.name }}</span>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

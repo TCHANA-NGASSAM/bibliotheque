@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Catalogue (bibliothécaire){% endblock %}
+
+{% block body %}
+    <h1>Ouvrages</h1>
+    <p><a href="{{ path('librarian_book_new') }}" class="btn btn-primary">Ajouter un ouvrage</a>
+       <a href="{{ path('librarian_dashboard') }}" class="btn btn-ghost">Tableau de bord</a></p>
+    <table class="data-table">
+        <thead>
+            <tr><th>Titre</th><th>Auteur</th><th>Stock</th><th></th></tr>
+        </thead>
+        <tbody>
+            {% for book in books %}
+                <tr>
+                    <td>{{ book.title }}</td>
+                    <td>{{ book.author }}</td>
+                    <td>{{ book.stock }}</td>
+                    <td class="nowrap">
+                        <a href="{{ path('librarian_book_edit', { id: book.id }) }}">Modifier</a>
+                        <form method="post" action="{{ path('librarian_book_delete', { id: book.id }) }}" class="inline-form" onsubmit="return confirm('Supprimer cet ouvrage ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete_book' ~ book.id) }}">
+                            <button type="submit" class="link-button danger">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

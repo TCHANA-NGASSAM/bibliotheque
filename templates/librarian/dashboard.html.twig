@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Espace bibliothécaire{% endblock %}
+
+{% block body %}
+    <h1>Espace bibliothécaire</h1>
+    <ul class="admin-links">
+        <li><a href="{{ path('librarian_book_index') }}">Gérer le catalogue (ouvrages)</a></li>
+        <li><a href="{{ path('librarian_category_index') }}">Catégories</a></li>
+        <li><a href="{{ path('librarian_language_index') }}">Langues</a></li>
+        <li><a href="{{ path('librarian_reservation_index') }}">Historique des réservations</a></li>
+    </ul>
+    <p><a href="{{ path('app_home') }}">← Retour au site</a></p>
+{% endblock %}

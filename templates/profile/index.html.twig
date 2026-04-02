@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon profil — BiblioConnect{% endblock %}
+
+{% block body %}
+    <h1>Mon profil</h1>
+
+    <section class="panel">
+        <h2>Mes réservations</h2>
+        {% if reservations is empty %}
+            <p class="muted">Aucune réservation.</p>
+        {% else %}
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Livre</th>
+                        <th>Début</th>
+                        <th>Fin</th>
+                        <th>Statut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in reservations %}
+                        <tr>
+                            <td><a href="{{ path('app_book_show', { id: r.book.id }) }}">{{ r.book.title }}</a></td>
+                            <td>{{ r.startAt|date('d/m/Y H:i') }}</td>
+                            <td>{{ r.endAt|date('d/m/Y H:i') }}</td>
+                            <td>
+                                {% set s = r.status.value %}
+                                {% if s == 'pending' %}En attente
+                                {% elseif s == 'confirmed' %}Confirmée
+                                {% elseif s == 'cancelled' %}Refusée / annulée
+                                {% elseif s == 'completed' %}Terminée (retour)
+                                {% else %}{{ s }}{% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </section>
+
+    <section class="panel">
+        <h2>Mes favoris</h2>
+        {% if favorites is empty %}
+            <p class="muted">Aucun favori pour le moment.</p>
+        {% else %}
+            <ul class="book-list">
+                {% for f in favorites %}
+                    <li class="book-list-item">
+                        <a href="{{ path('app_book_show', { id: f.book.id }) }}" class="book-list-link">
+                            <span class="book-list-title">{{ f.book.title }}</span>
+                            <span class="book-list-meta">{{ f.book.author }}</span>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </section>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modération des avis{% endblock %}
+
+{% block body %}
+    <h1>Modération des avis</h1>
+    <p><a href="{{ path('admin_dashboard') }}" class="btn btn-ghost">← Admin</a></p>
+    <table class="data-table">
+        <thead>
+            <tr><th>Livre</th><th>Utilisateur</th><th>Note</th><th>Extrait</th><th>Visible</th><th></th></tr>
+        </thead>
+        <tbody>
+            {% for r in reviews %}
+                <tr>
+                    <td><a href="{{ path('app_book_show', { id: r.book.id }) }}">{{ r.book.title }}</a></td>
+                    <td>{{ r.user.email }}</td>
+                    <td>{{ r.rating }}/5</td>
+                    <td>{{ r.content|slice(0, 80) }}{% if r.content|length > 80 %}…{% endif %}</td>
+                    <td>{% if r.visible %}Oui{% else %}Non{% endif %}</td>
+                    <td>
+                        <form method="post" action="{{ path('admin_review_visibility', { id: r.id }) }}" class="inline-form">
+                            <input type="hidden" name="_token" value="{{ csrf_token('review_visibility' ~ r.id) }}">
+                            <button type="submit" class="btn btn-ghost">{% if r.visible %}Masquer{% else %}Afficher{% endif %}</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

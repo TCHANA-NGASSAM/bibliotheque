@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion — BiblioConnect{% endblock %}
+
+{% block body %}
+    <h1>Connexion</h1>
+    <form method="post" class="stack-form max-w-form">
+        {% if error %}
+            <p class="flash flash-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</p>
+        {% endif %}
+
+        {% if app.user %}
+            <p class="muted">Connecté en tant que {{ app.user.userIdentifier }} — <a href="{{ path('app_logout') }}">Déconnexion</a></p>
+        {% endif %}
+
+        <label for="username">E-mail</label>
+        <input type="email" value="{{ last_username }}" name="_username" id="username" autocomplete="email" required autofocus>
+
+        <label for="password">Mot de passe</label>
+        <input type="password" name="_password" id="password" autocomplete="current-password" required>
+
+        <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
+
+        <button type="submit" class="btn btn-primary">Se connecter</button>
+    </form>
+    <p class="muted small"><a href="{{ path('app_register') }}">Créer un compte</a></p>
+{% endblock %}

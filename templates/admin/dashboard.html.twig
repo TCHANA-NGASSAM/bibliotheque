@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Administration{% endblock %}
+
+{% block body %}
+    <h1>Tableau de bord administrateur</h1>
+
+    <ul class="stats-grid">
+        <li><strong>{{ pendingReservations }}</strong><span>Réservations en attente</span></li>
+        <li><strong>{{ hiddenReviews }}</strong><span>Avis masqués (modération)</span></li>
+    </ul>
+
+    <h2>Stocks faibles (≤ 2)</h2>
+    {% if lowStockBooks is empty %}
+        <p class="muted">Aucun signal pour le moment.</p>
+    {% else %}
+        <ul class="simple-list">
+            {% for b in lowStockBooks %}
+                <li><a href="{{ path('app_book_show', { id: b.id }) }}">{{ b.title }}</a> — stock {{ b.stock }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <h2>Raccourcis</h2>
+    <ul class="admin-links">
+        <li><a href="{{ path('admin_review_index') }}">Modérer les commentaires</a></li>
+        <li><a href="{{ path('admin_user_index') }}">Gérer les rôles / profils</a></li>
+        <li><a href="{{ path('librarian_reservation_index') }}">Toutes les réservations</a></li>
+        <li><a href="{{ path('librarian_book_index') }}">Catalogue (gestion)</a></li>
+    </ul>
+    <p><a href="{{ path('app_home') }}">← Site public</a></p>
+{% endblock %}

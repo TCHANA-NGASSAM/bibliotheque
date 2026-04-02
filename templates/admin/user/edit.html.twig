@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Rôles — {{ user.email }}{% endblock %}
+
+{% block body %}
+    <h1>Rôles : {{ user.email }}</h1>
+    <p class="muted small">ROLE_USER est toujours attribué automatiquement aux comptes connectés.</p>
+    {{ form_start(form, { attr: { class: 'stack-form max-w-form' } }) }}
+        {{ form_widget(form) }}
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+    {{ form_end(form) }}
+    <p><a href="{{ path('admin_user_index') }}">← Liste</a></p>
+{% endblock %}

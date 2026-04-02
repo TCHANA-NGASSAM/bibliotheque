@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvel ouvrage{% endblock %}
+
+{% block body %}
+    <h1>Nouvel ouvrage</h1>
+    {{ form_start(form, { attr: { class: 'stack-form max-w-form' } }) }}
+        {{ form_widget(form) }}
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+    {{ form_end(form) }}
+    <p><a href="{{ path('librarian_book_index') }}">← Liste</a></p>
+{% endblock %}

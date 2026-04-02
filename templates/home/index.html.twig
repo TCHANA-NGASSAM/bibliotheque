@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil — BiblioConnect{% endblock %}
+
+{% block body %}
+    <section class="hero">
+        <h1>BiblioConnect</h1>
+        <p class="hero-lead">Découvrez le catalogue de la bibliothèque et réservez vos ouvrages en ligne.</p>
+        <p><a href="{{ path('app_books') }}" class="btn btn-primary">Parcourir le catalogue</a></p>
+    </section>
+
+    <section class="section">
+        <h2>Derniers ouvrages</h2>
+        {% if latestBooks is empty %}
+            <p class="muted">Aucun livre pour le moment. Les bibliothécaires peuvent enrichir le catalogue.</p>
+        {% else %}
+            <ul class="book-grid">
+                {% for book in latestBooks %}
+                    <li class="book-card">
+                        <a href="{{ path('app_book_show', { id: book.id }) }}" class="book-card-link">
+                            <div class="book-card-cover">
+                                {% if book.image %}
+                                    <img src="{{ book.image starts with 'http' ? book.image : asset(book.image) }}" alt="" loading="lazy">
+                                {% else %}
+                                    <span class="book-card-placeholder">Pas d’image</span>
+                                {% endif %}
+                            </div>
+                            <span class="book-card-title">{{ book.title }}</span>
+                            <span class="book-card-author">{{ book.author }}</span>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </section>
+{% endblock %}
